@@ -19,7 +19,7 @@ app.post('/', (req, res) => {
         if (postId == null || message == null) {
             throw new Error("Incorrect payload")
         }
-        const comment = new {
+        const comment = {
             id: comments.length + 1,
             postId,
             message

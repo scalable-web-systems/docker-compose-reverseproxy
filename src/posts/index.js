@@ -19,7 +19,7 @@ app.post('/', (req, res) => {
         if (title == null || description == null) {
             throw new Error("Incorrect payload")
         }
-        const post = new {
+        const post = {
             id: posts.length,
             title,
             description
