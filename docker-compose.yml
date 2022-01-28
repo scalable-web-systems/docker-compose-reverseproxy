@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  posts:
+    build:
+      context: ./src/posts
+    ports:
+      - 5000:5000
+  
+  comments:
+    build:
+      context: ./src/comments
+    ports:
+      - 5001:5000
