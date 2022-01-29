@@ -13,7 +13,7 @@ This tutorial is the second tutorial in the docker-compose series and focuses on
 ## What is Reverse Proxying?
 
 
-### Conclusion
+## Conclusion
 After doing this tutorial, one should have a strong understanding of reverse proxies and its applications. One should be able to use the npm fast-gateway package to create their own gateway and selectively allow access to different API endpoints.
 
 ### Links
