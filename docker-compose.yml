@@ -3,11 +3,34 @@ services:
   posts:
     build:
       context: ./src/posts
-    ports:
-      - 5000:5000
+    expose:
+      - 5000
+    environment:
+      - COMMENTS=comments
+    networks:
+      - network
   
   comments:
     build:
       context: ./src/comments
+    expose:
+      - 5000
+    networks:
+      - network
+  
+  gateway:
+    build: 
+      context: ./src/gateway
     ports:
-      - 5001:5000
+      - 5000:5000
+    environment:
+      - POSTS=posts
+      - COMMENTS=comments
+    depends_on:
+      - posts
+      - comments
+    networks:
+      - network
+
+networks:
+  network:

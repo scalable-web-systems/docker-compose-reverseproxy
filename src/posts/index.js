@@ -1,5 +1,7 @@
 const cors = require('cors')
 const express = require("express")
+const axios = require('axios').default
+
 
 const app = express()
 app.use(cors())
@@ -8,8 +10,26 @@ const port = process.env.port || 5000
 
 const posts = []
 
-app.get('/', (req, res) => {
-    return res.status(200).json(posts)
+app.get('/', async (req, res) => {
+    try {
+        const commentServiceName = process.env.COMMENTS
+        if (!commentServiceName) {
+            return res.status(400).json({"error": "Comments service name environment variable - COMMENTS not defined."})
+        }
+        const postsWithComments =await Promise.all(posts
+            .map(async (post) => {
+                const comments = await (await axios.get(`http://${commentServiceName}:${port}/${post.id}`)).data
+                return {
+                    ...post,
+                    comments
+                }
+            }))
+        return res.status(200).json(postsWithComments)
+    }
+    catch (error) {
+        console.error(error)
+        return res.status(500).json({"error": error})
+    }
 })
 
 app.post('/', (req, res) => {
@@ -20,7 +40,7 @@ app.post('/', (req, res) => {
             throw new Error("Incorrect payload")
         }
         const post = {
-            id: posts.length,
+            id: posts.length + 1,
             title,
             description
         }
@@ -32,6 +52,33 @@ app.post('/', (req, res) => {
         return res.status(500).json({error: error.message})
     }
 })
+
+/*
+    * OVER ENGINEERED HERE, DELETE ENDPOINT NOT NECESSARY FOR THE GATEWAY TUTORIAL
+*/
+// app.delete('/:id', async (req, res) => {
+//     try {
+//         const id = parseInt(req.params['id'])
+//         const post = posts.find(p => p.id === id)
+//         if (!post) {
+//             return res.status(404).json({"error": `Post with ID #${id} not found.`})
+//         }
+//         const commentServiceName = process.env.COMMENTS
+//         if (!commentServiceName) {
+//             return res.status(400).json({"error": "Comments service name environment variable - COMMENTS not defined."})
+//         }
+//         await axios.delete(`http://${commentServiceName}:${port}/${id}`)
+//         posts
+//             .splice(posts.indexOf(post), 1)
+//         return res.status(200).json({
+//             msg: `Post with ID #${id} successfully deleted`,
+//             data: posts,
+//         })
+//     }
+//     catch(error) {
+//         return res.status(500).json({"error": error.message})
+//     }
+// })
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server listening on port ${port}`)
