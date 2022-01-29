@@ -91,5 +91,6 @@ After doing this tutorial, one should be able to use docker-compose to write the
 2. [Npm](https://www.npmjs.com/)
 3. [NodeJS](https://nodejs.org/en/docs/)
 4. [Express](https://expressjs.com/en/starter/hello-world.html)
+5. [Docker](https://docs.docker.com/get-started/)
 
 
