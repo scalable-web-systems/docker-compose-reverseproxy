@@ -15,6 +15,8 @@ services:
       context: ./src/comments
     expose:
       - 5000
+    environment:
+      - POSTS=posts
     networks:
       - network
   

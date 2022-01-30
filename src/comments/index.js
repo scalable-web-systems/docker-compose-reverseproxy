@@ -1,5 +1,6 @@
 const cors = require('cors')
 const express = require("express")
+const axios = require("axios").default
 
 const app = express()
 app.use(cors())
@@ -8,16 +9,25 @@ const port = process.env.port || 5000
 
 const comments = []
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     return res.status(200).json(comments)
 })
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
     const payload = req.body
     const { postId, message } = payload
     try {
         if (postId == null || message == null) {
             throw new Error("Incorrect payload")
+        }
+        const postServiceName = process.env.POSTS
+        if (!postServiceName) {
+            return res.status(400).json({"msg": "Environment variable for posts service name not set!"})
+        }
+        const fetchPostRequest = await axios.get(`http://${postServiceName}:${port}/${postId}`)
+        const post = await fetchPostRequest.data
+        if (!post) {
+            return res.status(400).json({"msg": `Post with ID #${postId} not found!`})
         }
         const comment = {
             id: comments.length + 1,
@@ -33,7 +43,7 @@ app.post('/', (req, res) => {
     }
 })
 
-app.get('/:id', (req, res) => {
+app.get('/:id', async (req, res) => {
     try {
         const postId = parseInt(req.params['id'])
         console.log(`Incoming request to return comments associated with post ID #${postId}`)

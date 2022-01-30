@@ -32,7 +32,19 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.post('/', (req, res) => {
+app.get('/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params['id'])
+        console.log(`Incoming request to find post with ID #${id}`)
+        const post = posts.find(p => p.id === id)
+        return res.status(post ? 200 : 404).json(post)
+    }
+    catch (error) {
+        return res.status(500).json({"error": error.message})
+    }
+})
+
+app.post('/', async (req, res) => {
     const payload = req.body
     const { title, description } = payload
     try {
