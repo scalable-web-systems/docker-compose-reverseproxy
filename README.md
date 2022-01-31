@@ -248,5 +248,7 @@ After doing this tutorial, one should have a strong understanding of reverse pro
 4. [Express](https://expressjs.com/en/starter/hello-world.html)
 5. [Docker](https://docs.docker.com/get-started/)
 6. [Fast Gateway NPM Package](https://www.npmjs.com/package/fast-gateway)
+7. [Promises, Async, Await - JS](https://javascript.info/async)
+8. [Axios](https://github.com/axios/axios)
 
 
