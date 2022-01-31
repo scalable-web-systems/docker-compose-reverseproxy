@@ -239,7 +239,7 @@ You should be able to see your post along with its newly added comment. But wait
 Below the verbose 404 stack trace from when we accessed the `/posts/` endpoint when there were no comments for the post, you will see the log message saying that there's been an incoming request to this private endpoint.
 
 ## Conclusion
-After doing this tutorial, one should have a strong understanding of reverse proxies and its applications. One should be able to use the npm fast-gateway package to create their own gateway and selectively allow access to different API endpoints.
+After doing this tutorial, one should have a strong understanding of reverse proxies and its applications. One should be able to use the npm fast-gateway package to create their own reverse proxy and selectively allow access to different API endpoints.
 
 ### Links
 1. [Javascript Tutorial](https://www.w3schools.com/js/)
