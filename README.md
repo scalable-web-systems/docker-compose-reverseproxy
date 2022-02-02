@@ -203,7 +203,7 @@ message: string
 ```
 * Endpoints:
   * GET / - returns a list of all comments (private)
-  * GET /:id - returns an individual comment with the given id (private)
+  * GET /:id - returns all comments of a post with the given id (private)
   * POST / - adds a new post with the given message and post id, if the post with the supplied id exists (public)
 
 
