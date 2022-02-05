@@ -1,4 +1,5 @@
 # Tutorial on Docker Compose 2 | Reverse Proxys
+> **Author -** Ishaan Khurana, [LinkedIn](https://www.linkedin.com/in/ishaan-khurana-46968679/)
 
 ## Objective
 This tutorial is the second tutorial in the docker-compose series and focuses on reverse proxys. It also underscores the importance of not exposing all endpoints to the outside world and stresses on the concept of abstraction. [Click here](https://github.com/scalable-web-systems/docker-compose-node) to navigate to the first tutorial in this series to learn more about docker-compose.
@@ -103,7 +104,7 @@ One last difference between this script and the script we looked at in the previ
 expose:
   - 5000
 ``` 
-It's worth noting that we are still using `ports:` section for the **gateway** service but use the `expose:` section for the **posts** and **comments** service. By saying that we are exposing the port 5000, we're simply allowing other services on the same network to access the given service on port 5000. But we stop short of publishing the port to the outside world. This is important. Because we don't want the outside world to have access to our individual APIs. Any request from the client should come through the **reverseproxy** service which we do publish to the outside world.
+It's worth noting that we are still using `ports:` section for the **reverseproxy** service but use the `expose:` section for the **posts** and **comments** service. By saying that we are exposing the port 5000, we're simply allowing other services on the same network to access the given service on port 5000. But we stop short of publishing the port to the outside world. This is important. Because we don't want the outside world to have access to our individual APIs. Any request from the client should come through the **reverseproxy** service which we do publish to the outside world.
 
 ### reverseproxy
 So now that we have inspected the changes in the docker-compose.yml script, let's take a look at the source code for the **reverseproxy** API. Pull up the `index.js` file located in the `src/reverseproxy` subdirectory. This is how the code looks like:
@@ -203,8 +204,8 @@ message: string
 ```
 * Endpoints:
   * GET / - returns a list of all comments (private)
-  * GET /:id - returns all comments of a post with the given id (private)
-  * POST / - adds a new post with the given message and post id, if the post with the supplied id exists (public)
+  * GET /:postId - returns all comments of a post with the given post id (private)
+  * POST / - adds a new comment with the given message and post id, if the post with the supplied id exists (public)
 
 
 The endpoints denoted as private will not be accessible through the reverse proxy and hence won't be accessible to the outside world. They will only be accessible from other services (posts, comments) on the same network. At this time, we don't want the client to be able get an individual post or comments. 
@@ -213,7 +214,7 @@ The compiler interprets the options in a top-down manner. This is paramount to s
 
 Next we define the `/posts` route and we set the target to our posts service. Note that we communicate with all the services on the same docker-compose network using their names. We are not intercepting any request here nor are we supplying any additional configuration options because all of our other **Post** service endpoints are public.
 
-Next we define the `/comments` route. It looks very similar with a minor difference. We configure the **methods** property to allow access to only GET endpoints.
+Next we define the `/comments` route. It looks very similar with a minor difference. We configure the **methods** property to allow access to only POST endpoints.
 
 ## Steps
 1. Fire up the system using `docker-compose up` or `docker-compose up -d` to run the system in detached mode.
@@ -231,7 +232,7 @@ Our **reverserproxy** service returns 500 status code because it in turn receive
 
 6. Now let's add a new comment for the post which we just created:
 ![image](https://user-images.githubusercontent.com/7733516/151725769-2e8f65a5-5c25-479d-af18-bde9f9b04854.png)
-You should get a 200 status code back and should be able to view your newly added comment in the output.
+You should get a 201 status code back and should be able to view your newly added comment in the output.
 7. Let's try to get all the posts again:
 ![image](https://user-images.githubusercontent.com/7733516/151725815-c55457f6-7f7f-406b-a381-dcff7aff381f.png)
 You should be able to see your post along with its newly added comment. But wait. How did our **posts** service know that there's a new comment on this post? Let's look at the logs for our **comments** service. Tab over to your terminal window and type `docker-compose logs comments`:
